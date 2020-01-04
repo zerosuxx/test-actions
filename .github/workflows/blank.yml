@@ -4,12 +4,14 @@ on: [push]
 
 jobs:
   build:
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
+    env:
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT: 1
     steps:
     - uses: actions/checkout@v1
     - name: build
-      env:
-        DOCKER_BUILDKIT: 1
+      if: github.event_name == 'release'
       run: docker build --build-arg testArg=${GITHUB_REF##*/} -t test .
     - name: run
       run: docker run --rm test ls
