@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: build
-      if: github.event_name == 'release'
+      if: startsWith(github.ref, 'refs/tags')
       run: docker build --build-arg testArg=${GITHUB_REF##*/} -t test .
     - name: run
       run: docker run --rm test ls
