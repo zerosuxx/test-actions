@@ -10,7 +10,7 @@ jobs:
     - name: build
       env:
         DOCKER_BUILDKIT: 1
-      run: docker build -t test .
+      run: docker build --build-arg testArg=${GITHUB_REF##*/} -t test .
     - name: run
       run: docker run --rm test ls
     - name: echo
