@@ -13,3 +13,5 @@ jobs:
       run: docker build -t test .
     - name: run
       run: docker run --rm test ls
+    - name: echo
+      run: echo ${GITHUB_REF##*/}
