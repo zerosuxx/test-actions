@@ -1,7 +1,5 @@
 FROM alpine
 
-RUN echo "test"
+ARG testArg="arg"
 
-ENV test=1
-
-RUN echo $test
+RUN echo $testArg
