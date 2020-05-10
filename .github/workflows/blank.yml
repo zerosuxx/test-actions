@@ -17,3 +17,4 @@ jobs:
       run: docker run --rm test ls && docker ps
     - name: Login To DockerHub Registry
       run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
