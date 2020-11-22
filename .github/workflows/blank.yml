@@ -9,12 +9,14 @@ jobs:
       COMPOSE_DOCKER_CLI_BUILD: 1
       DOCKER_BUILDKIT: 1
     steps:
-    - uses: actions/checkout@v2
-    - name: build
-      #if: startsWith(github.ref, 'refs/tags')
-      run: docker build --build-arg testArg=${GITHUB_REF##*/} -t test .
-    - name: run
-      run: docker ps && curl 12.1.1.1:2376
-    - name: Login To DockerHub Registry
-      run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      - name: test
+        run: git clone "https://${{ secrets.GITHUB_TOKEN }}@github.com/zerosuxx/test-actions.git"
+    #- uses: actions/checkout@v2
+    #- name: build
+    # if: startsWith(github.ref, 'refs/tags')
+    #  run: docker build --build-arg testArg=${GITHUB_REF##*/} -t test .
+    #- name: run
+    #  run: docker ps && curl 12.1.1.1:2376
+    #- name: Login To DockerHub Registry
+    #  run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
