@@ -4,13 +4,13 @@ on: push
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: "ubuntu-latest" #self-hosted
     env:
       COMPOSE_DOCKER_CLI_BUILD: 1
       DOCKER_BUILDKIT: 1
     steps:
       - name: test
-        run: env && git clone "https://${GITHUB_REPOSITORY_OWNER}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" && ls -al test-actions 
+        run: id #env && git clone "https://${GITHUB_REPOSITORY_OWNER}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" && ls -al test-actions 
     #- uses: actions/checkout@v2
     #- name: build
     # if: startsWith(github.ref, 'refs/tags')
