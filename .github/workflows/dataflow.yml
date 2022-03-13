@@ -1,6 +1,7 @@
 name: DataFlow
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'projects/**'
