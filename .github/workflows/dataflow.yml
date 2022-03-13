@@ -1,0 +1,13 @@
+name: CI
+
+on:
+  push:
+    paths:
+      - 'projects/'
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: test
+        run: env
