@@ -2,11 +2,24 @@ name: DataFlow
 
 on:
   workflow_dispatch:
+    inputs:
+      project1:
+        description: 'Project1'
+        required: false
+        type: boolean
   push:
     paths:
       - 'projects/**'
 
 jobs:
+  log-the-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Project1: $PROJECT1"
+        env:
+          PROJECT1: ${{ github.event.inputs.project1 }}
+
   build:
     runs-on: "ubuntu-latest"
     steps:
