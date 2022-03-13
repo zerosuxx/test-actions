@@ -1,4 +1,4 @@
-name: CI
+name: DataFlow
 
 on:
   push:
