@@ -3,7 +3,7 @@ name: DataFlow
 on:
   push:
     paths:
-      - 'projects/'
+      - 'projects/**'
 
 jobs:
   build:
