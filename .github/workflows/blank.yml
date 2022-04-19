@@ -6,20 +6,20 @@ jobs:
   check-published-version:
     runs-on: ubuntu-latest
     outputs:
-      packageVersion: ${{ steps.check-version.outputs.packageVersion }}
+      packageVersion: ${{ steps.check.outputs.packageVersion }}
     steps:
       - name: Check version
-        id: check-version
+        id: check
         env:
           NPM_PACKAGE: '@emartech/client-publish'
           TARGET_IMAGE: zerosuxx/emartech-client-publish
         run: |
-          export VERSION=$(npm view $NPM_PACKAGE version)
-          echo $VERSION
-          dockerManifestResult=$(docker manifest inspect $TARGET_IMAGE:$VERSION || true)
+          export packageVersion=$(npm view $NPM_PACKAGE version)
+          echo $packageVersion
+          dockerManifestResult=$(docker manifest inspect $TARGET_IMAGE:$packageVersion || true)
           if [ "$dockerManifestResult" == "" ];
           then
-            echo "::set-output name=packageVersion::$VERSION"
+            echo "::set-output name=packageVersion::$packageVersion"
           fi
         
   job2:
