@@ -16,7 +16,7 @@ jobs:
         run: |
           export VERSION=$(npm view $NPM_PACKAGE version)
           echo $VERSION
-          dockerManifestResult=$(docker manifest inspect $TARGET_IMAGE:$VERSION)
+          dockerManifestResult=$(docker manifest inspect $TARGET_IMAGE:$VERSION || true)
           if [ "$dockerManifestResult" == "" ];
           then
             echo "::set-output name=packageVersion::$VERSION"
