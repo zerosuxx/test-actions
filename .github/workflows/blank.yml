@@ -3,38 +3,14 @@ name: CI
 on: push
 
 jobs:
-  check-published-version:
-    runs-on: ubuntu-latest
-    outputs:
-      packageVersion: ${{ steps.check.outputs.packageVersion }}
+  build:
+    runs-on: "ubuntu-latest" #self-hosted
+    env:
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT: 1
     steps:
-      - name: Check version
-        id: check
-        env:
-          NPM_PACKAGE: '@emartech/client-publish'
-          TARGET_IMAGE: zerosuxx/emartech-client-publish
-        run: |
-          export packageVersion=$(npm view $NPM_PACKAGE version)
-          echo $packageVersion
-          dockerManifestResult=$(docker manifest inspect $TARGET_IMAGE:$packageVersion || true)
-          if [ "$dockerManifestResult" == "" ];
-          then
-            echo "::set-output name=packageVersion::$packageVersion"
-          fi
-        
-  job2:
-    runs-on: ubuntu-latest
-    if: needs.check-published-version.outputs.packageVersion != ''
-    needs: check-published-version
-    steps:
-      - run: echo ${{needs.check-published-version.outputs.packageVersion}}
-
-#   build:
-#     runs-on: "ubuntu-latest" #self-hosted
-#     env:
-#       COMPOSE_DOCKER_CLI_BUILD: 1
-#       DOCKER_BUILDKIT: 1
-#     steps:
+      - name: test
+        run: df -h
     #  - name: test
     #    run: id #env && git clone "https://${GITHUB_REPOSITORY_OWNER}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" && ls -al test-actions 
     #- uses: actions/checkout@v2
