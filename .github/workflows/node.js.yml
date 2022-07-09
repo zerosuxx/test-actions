@@ -10,6 +10,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Client Publish
-      uses: zerosuxx/zerosuxx-example-github-action@v1
+      uses: zerosuxx/example-github-action@v1
       with:
         target: 'production'
