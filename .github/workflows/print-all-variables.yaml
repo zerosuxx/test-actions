@@ -1,0 +1,12 @@
+name: Print All Variables
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  info:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "${{ toJSON(github) }}"
