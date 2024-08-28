@@ -8,7 +8,11 @@ jobs:
   info:
     runs-on: ubuntu-latest
     steps:
-      - run: |
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Print
+        run: |
           echo "${{ toJSON(github) }}"
           echo "Author Name: $(git show -s --format='%an' ${{ github.sha }})"
           echo "Author Email: $(git show -s --format='%ae' ${{ github.sha }}"
