@@ -17,10 +17,8 @@ jobs:
           echo '${{ toJSON(github) }}'
 
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            author_name="$(git show -s --format='%an' ${{ github.sha }})"
-            author_email="$(git show -s --format='%ae' ${{ github.sha }})"
             echo "GIT_AUTHOR_USERNAME=${{ github.actor }}" >> $GITHUB_ENV
-            echo "GIT_AUTHOR=${author_name} <${author_email}>" >> $GITHUB_ENV
+            echo "GIT_AUTHOR=$(git show -s --format='%an' ${{ github.sha }}) <$(git show -s --format='%ae' ${{ github.sha }})>" >> $GITHUB_ENV
             echo 'GIT_MESSAGE<<EOF' >> $GITHUB_ENV
             git show -s --format='%B' ${{ github.sha }} >> $GITHUB_ENV
             echo 'EOF' >> $GITHUB_ENV
