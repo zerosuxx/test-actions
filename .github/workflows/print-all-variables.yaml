@@ -14,7 +14,7 @@ jobs:
 
       - name: Print
         run: |
-          echo "${{ toJSON(github) }}"
+          echo '${{ toJSON(github) }}'
           echo "Author Name: $(git show -s --format='%an' ${{ github.sha }})"
           echo "Author Email: $(git show -s --format='%ae' ${{ github.sha }})"
           echo "Subject And Body: $(git show -s --format='%B' ${{ github.sha }})"
