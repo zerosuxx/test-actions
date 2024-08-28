@@ -35,7 +35,7 @@ jobs:
       - name: Print envs
         run: |
           env
-          echo -e "${{ env.GIT_MESSAGE }}\n\n${{ env.GIT_AUTHOR_USERNAME }} (${{ env.GIT_AUTHOR }})" 
+          echo -e "${{ env.GIT_MESSAGE }}\n\n@${{ env.GIT_AUTHOR_USERNAME }} (${{ env.GIT_AUTHOR }})" 
         env:
           GIT_AUTHOR_USERNAME: ${{ env.GIT_AUTHOR_USERNNAME }}
           GIT_AUTHOR: ${{ env.GIT_AUTHOR }}
