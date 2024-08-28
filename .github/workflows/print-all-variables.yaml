@@ -12,9 +12,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Print
+      - name: Print variables
         run: |
           echo '${{ toJSON(github) }}'
           echo "Author Name: $(git show -s --format='%an' ${{ github.sha }})"
           echo "Author Email: $(git show -s --format='%ae' ${{ github.sha }})"
           echo "Subject And Body: $(git show -s --format='%B' ${{ github.sha }})"
+          echo EXAMPLE_ENV=aaaa >> $GITHUB_ENV
+
+      - name: Print envs
+        run: |
+          env
+        env:
+          TEST_ENV: ${{ env.EXAMPLE_ENV ))
