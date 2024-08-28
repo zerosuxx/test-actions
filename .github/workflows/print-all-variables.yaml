@@ -24,4 +24,4 @@ jobs:
         run: |
           env
         env:
-          TEST_ENV: ${{ env.EXAMPLE_ENV ))
+          TEST_ENV: ${{ env.EXAMPLE_ENV }}
