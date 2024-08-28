@@ -18,7 +18,9 @@ jobs:
           echo "Author Name: $(git show -s --format='%an' ${{ github.sha }})"
           echo "Author Email: $(git show -s --format='%ae' ${{ github.sha }})"
           echo "Subject And Body: $(git show -s --format='%B' ${{ github.sha }})"
-          echo "GIT_MESSAGE=$(git show -s --format='%B' ${{ github.sha }})" >> $GITHUB_ENV
+          echo 'GIT_MESSAGE<<EOF' >> $GITHUB_ENV
+          git show -s --format='%B' ${{ github.sha }} >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
 
       - name: Print envs
         run: |
