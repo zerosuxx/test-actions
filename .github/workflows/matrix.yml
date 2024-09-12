@@ -14,6 +14,7 @@ jobs:
           nix_path: nixpkgs=channel:nixos-24.05
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
       - run: |
+          set -ex
           nix-shell -p vault
           cp -R $(nix eval -f '<nixpkgs>' --raw vault)/bin /tmp/bin
         env:
@@ -21,4 +22,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: dist-${{ matrix.os }}
-          path: /tmp/bin/*
+          path: /tmp/bin/
+          include-hidden-files: true
