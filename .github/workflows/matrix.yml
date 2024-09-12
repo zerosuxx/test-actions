@@ -15,6 +15,10 @@ jobs:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
       - run: |
           nix-shell -p vault
-          nix eval -f '<nixpkgs>' --raw vault
+          cp -R $(nix eval -f '<nixpkgs>' --raw vault)/bin /tmp/bin
         env:
           NIXPKGS_ALLOW_UNFREE: 1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.os }}
+          path: /tmp/bin/*
