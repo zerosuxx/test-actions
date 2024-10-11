@@ -1,0 +1,11 @@
+name: gcloud-k8s-deployer
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    container: "zerosuxx/gcloud-k8s-deployer:0.1.0"
+    steps:
+      - name: test
+        run: gcloud --version
