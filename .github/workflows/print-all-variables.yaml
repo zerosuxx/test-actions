@@ -16,7 +16,7 @@ jobs:
       - name: Print variables
         run: |
           echo '${{ toJSON(github) }}'
-          safe_show_commit_message() { git show -s --format='%B' ${{ github.sha }} | sed "s/'/'\"'\"'/g; s/\`/\```/g" }
+          function safe_show_commit_message() { git show -s --format='%B' ${{ github.sha }} | sed "s/'/'\"'\"'/g; s/\`/\```/g" }
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "GIT_AUTHOR_USERNAME=${{ github.actor }}" >> $GITHUB_ENV
             echo "GIT_AUTHOR=$(git show -s --format='%an' ${{ github.sha }}) <$(git show -s --format='%ae' ${{ github.sha }})>" >> $GITHUB_ENV
