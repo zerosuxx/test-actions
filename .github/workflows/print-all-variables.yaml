@@ -1,6 +1,5 @@
 name: Print All Variables
 
-
 on:
   workflow_dispatch:
   push:
