@@ -17,7 +17,7 @@ jobs:
           echo '${{ toJSON(github) }}'
           function safe_show_commit_message() { 
             git show -s --format='%B' ${{ github.sha }} | 
-            sed "s/\\\`/×/g" | 
+            sed "s/\\`/×/g" | 
             sed "s/'/'\"'\"'/g"
           }
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
