@@ -32,7 +32,9 @@ jobs:
             safe_show_commit_message >> $GITHUB_ENV
             echo 'EOF' >> $GITHUB_ENV
           fi
-
+          commit_message="hello {message} world"
+          commit_message="${commit_message//\{message\}/"${GIT_MESSAGE}"}"
+          echo -e "$commit_message"
       - name: Print envs
         run: |
           env
