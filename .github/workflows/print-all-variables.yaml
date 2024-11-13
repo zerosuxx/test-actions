@@ -14,7 +14,6 @@ jobs:
 
       - name: Print variables
         run: |
-          #echo '${{ toJSON(github) }}'
           function safe_show_commit_message() { 
             git show -s --format='%B' ${{ github.sha }} | 
             base64
