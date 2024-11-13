@@ -23,7 +23,7 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "GIT_AUTHOR_USERNAME=${{ github.actor }}" >> $GITHUB_ENV
             echo "GIT_AUTHOR=$(git show -s --format='%an' ${{ github.sha }}) <$(git show -s --format='%ae' ${{ github.sha }})>" >> $GITHUB_ENV
-            echo 'GIT_MESSAGE<<EOF' >> $GITHUB_ENV
+            echo GIT_MESSAGE<<'EOF' >> $GITHUB_ENV
             safe_show_commit_message >> $GITHUB_ENV
             echo 'EOF' >> $GITHUB_ENV
           else
