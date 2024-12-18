@@ -1,0 +1,13 @@
+name: CI
+
+on: 
+  push:
+    branches:
+      - 'spike/*-*'
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: test
+        run: echo '${{ github }}'
