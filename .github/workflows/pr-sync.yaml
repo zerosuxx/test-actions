@@ -7,8 +7,11 @@ on:
       - synchronize
       - closed
 
+env:
+  FOLDER_LIST: 'infra/dev,infra/staging,infra/prod'
+
 jobs:
-  build:
+  prepare:
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v4
@@ -17,12 +20,36 @@ jobs:
       - name: test
         run: echo '${{ toJSON(github) }}'
       - name: modified files
-        run: git diff --name-only origin/master
+        run: |
+          modified_files=$(git diff --name-only origin/main)
 
-      - uses: jdx/mise-action@v2
-        with:
-          tool_versions: |
-            terraform 1.10.3
-            terragrunt 0.71.1
+          affected_folders=()
+          for folder in $(echo ${FOLDER_LIST} | sed "s/,/ /g")
+          do
+            if echo "$modified_files" | grep -q "${folder}"; then
+              affected_folders+=("$folder")
+            fi
+          done
 
-      - run: terragrunt --version
+          echo "${affected_folders[@]}"
+
+          echo "matrix=$(jq -c -n '$ARGS.positional' --jsonargs "${affected_folders[@]})" >> $GITHUB_OUTPUT
+
+  plan:
+    needs: create-pull-request
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        folder: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      
+      - run: "echo ${{ matrix.folder }}"
+      # - uses: jdx/mise-action@v2
+      #   with:
+      #     tool_versions: |
+      #       terraform 1.10.3
+      #       terragrunt 0.71.1
+
+      # - run: terragrunt --version
