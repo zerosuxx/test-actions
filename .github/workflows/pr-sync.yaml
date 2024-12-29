@@ -13,6 +13,8 @@ env:
 jobs:
   prepare:
     runs-on: "ubuntu-latest"
+    outputs:
+      matrix: ${{ steps.modified-files.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,6 +22,7 @@ jobs:
       - name: test
         run: echo '${{ toJSON(github) }}'
       - name: modified files
+        id: modified-files
         run: |
           modified_files=$(git diff --name-only origin/master)
 
@@ -33,14 +36,13 @@ jobs:
 
           echo "${affected_folders[@]}"
 
-          echo "matrix=$(jq -c -n '$ARGS.positional' --args "${affected_folders[@]}")" >> $GITHUB_OUTPUT
+          echo "matrix=$(jq -c -n '{folder: $ARGS.positional}' --args "${affected_folders[@]}")" >> $GITHUB_OUTPUT
 
   plan:
     needs: prepare
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        folder: ${{ fromJson(needs.prepare.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
