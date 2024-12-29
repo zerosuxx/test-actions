@@ -27,8 +27,9 @@ jobs:
         run: echo '${{ toJSON(github) }}'
       - name: modified files
         id: modified-files
+        shell: /usr/bin/bash -eo pipefail {0}
         run: |
-          modified_files=$(git diff --name-only origin/master)
+          modified_files=$(curl -fsSL "${{ github.event.pull_request.diff_url }}" | grep "^diff --git" | awk '{print $3}')
 
           affected_folders=()
           for folder in $(echo ${FOLDER_LIST} | sed "s/,/ /g")
@@ -64,6 +65,7 @@ jobs:
             plan-${{ matrix.folder }}-${{ github.event.number }}
   
       - name: Run
+        shell: /usr/bin/bash -eo pipefail {0}
         run: |
           action="plan"
           if [ "${{ github.event.action }}" == "closed" ] && [ "${{ github.event.pull_request.merged }}" == "true" ]; then
