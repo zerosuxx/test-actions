@@ -41,10 +41,10 @@ jobs:
           echo "matrix=$(jq -c -n '{folder: $ARGS.positional}' --args "${affected_folders[@]}")" | tee -a $GITHUB_OUTPUT
           echo "affected_folders_length=${#affected_folders[@]}" | tee -a $GITHUB_OUTPUT
 
-  plan:
+  tf:
     needs: prepare
     runs-on: ubuntu-latest
-    if: needs.prepare.outputs.affected_folders_length > 0 && contains(fromJSON('["opened", "synchronize"]'), github.event.action)
+    if: needs.prepare.outputs.affected_folders_length > 0 #&& contains(fromJSON('["opened", "synchronize"]'), github.event.action)
     strategy:
       matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
     steps:
@@ -54,6 +54,20 @@ jobs:
       - uses: jdx/mise-action@v2
         with:
           tool_versions: ${{ env.TOOLS }}
+
+      - name: Load plan file
+        uses: actions/cache@v4
+        with:
+          path: /tmp/tfplan
+          key: plan-${{ matrix.folder }}-${{ github.event.number }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            plan-${{ matrix.folder }}-${{ github.event.number }}
   
-      - run: "terragrunt run-all plan --terragrunt-out-dir /tmp/tfplan --terragrunt-working-dir ${{ matrix.folder }}"
+      - run: |
+          action="plan"
+          if [ "${{ github.event.action }}" == "closed" ]; then
+            action="apply"
+          fi
+
+          terragrunt run-all "${action}" --terragrunt-out-dir /tmp/tfplan --terragrunt-working-dir "${{ matrix.folder }}"
 
