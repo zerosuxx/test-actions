@@ -3,6 +3,7 @@ name: PrSync
 on:
   pull_request:
     types:
+      - opened
       - synchronize
 
 jobs:
@@ -10,4 +11,4 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: test
-        run: echo '${{ github }}'
+        run: echo '${{ toJSON(github) }}'
