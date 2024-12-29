@@ -1,0 +1,13 @@
+name: PrSync
+
+on:
+  pull_request:
+    types:
+      - synchronize
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: test
+        run: echo '${{ github }}'
