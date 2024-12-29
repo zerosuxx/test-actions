@@ -8,6 +8,7 @@ on:
       - closed
 
 env:
+  TERRAGRUNT_NON_INTERACTIVE: 'true'
   FOLDER_LIST: 'infra/dev,infra/staging,infra/prod'
   TOOLS: |
     terraform 1.10.3
@@ -72,5 +73,5 @@ jobs:
             action="apply"
           fi
 
-          terragrunt run-all "${action}" --terragrunt-out-dir /tmp/tfplan --terragrunt-working-dir "${{ matrix.folder }}"
+          terragrunt run-all "${action}" --terragrunt-out-dir /tmp/tfplan --terragrunt-working-dir "$(pwd)/${{ matrix.folder }}"
 
