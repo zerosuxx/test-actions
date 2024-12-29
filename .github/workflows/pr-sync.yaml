@@ -33,13 +33,11 @@ jobs:
           for folder in $(echo ${FOLDER_LIST} | sed "s/,/ /g")
           do
             if echo "$modified_files" | grep -q "${folder}"; then
-              affected_folders+=("$folder")
+              # affected_folders+=("$folder")
             fi
           done
 
-          echo "${affected_folders[@]}"
-
-          echo "matrix=$(jq -c -n '{folder: $ARGS.positional}' --args "${affected_folders[@]}")" >> $GITHUB_OUTPUT
+          echo "matrix=$(jq -c -n '{folder: $ARGS.positional}' --args "${affected_folders[@]}")" | tee -a $GITHUB_OUTPUT
 
   plan:
     needs: prepare
