@@ -21,7 +21,7 @@ jobs:
         run: echo '${{ toJSON(github) }}'
       - name: modified files
         run: |
-          modified_files=$(git diff --name-only origin/main)
+          modified_files=$(git diff --name-only origin/master)
 
           affected_folders=()
           for folder in $(echo ${FOLDER_LIST} | sed "s/,/ /g")
