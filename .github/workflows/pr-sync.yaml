@@ -19,12 +19,10 @@ jobs:
       - name: modified files
         run: git diff --name-only origin/master
 
-      - name: Check terragrunt HCL
-        uses: gruntwork-io/terragrunt-action@v2
+      - uses: jdx/mise-action@v2
         with:
-          tf_version: '1.10.3'
-          tg_version: '0.71.1'
-          tg_dir: '.'
-          tg_command: '--version'
+          tool_versions: |
+            terraform 1.10.3
+            terragrunt 0.71.1
 
-      - run: terragrunt
+      - run: terragrunt --version
