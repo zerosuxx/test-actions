@@ -33,7 +33,7 @@ jobs:
 
           echo "${affected_folders[@]}"
 
-          echo "matrix=$(jq -c -n '$ARGS.positional' --jsonargs "${affected_folders[@]})" >> $GITHUB_OUTPUT
+          echo "matrix=$(jq -c -n '$ARGS.positional' --args "${affected_folders[@]}")" >> $GITHUB_OUTPUT
 
   plan:
     needs: prepare
