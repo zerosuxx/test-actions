@@ -63,9 +63,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /tmp/tfplan
-          key: plan-${{ matrix.folder }}-${{ github.event.pull_request.number }}
+          key: plan-${{ matrix.folder }}-${{ github.event.number }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
-            plan-${{ matrix.folder }}-${{ github.event.pull_request.number }}
+            plan-${{ matrix.folder }}-${{ github.event.number }}
   
       - name: Run
         shell: /usr/bin/bash -eo pipefail {0}
