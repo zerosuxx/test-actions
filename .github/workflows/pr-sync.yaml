@@ -9,10 +9,13 @@ on:
 
 env:
   FOLDER_LIST: 'infra/dev,infra/staging,infra/prod'
+  TOOLS: |
+    terraform 1.10.3
+    terragrunt 0.71.1
 
 jobs:
   prepare:
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.modified-files.outputs.matrix }}
     steps:
@@ -41,17 +44,16 @@ jobs:
   plan:
     needs: prepare
     runs-on: ubuntu-latest
+    if: contains(fromJSON('["opened", "synchronize"]'), github.event.action)
     strategy:
       matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
       
-      - run: "echo ${{ matrix.folder }}"
-      # - uses: jdx/mise-action@v2
-      #   with:
-      #     tool_versions: |
-      #       terraform 1.10.3
-      #       terragrunt 0.71.1
+      - uses: jdx/mise-action@v2
+        with:
+          tool_versions: ${{ env.TOOLS }}
+  
+      - run: "terragrunt run-all plan --terragrunt-out-dir /tmp/tfplan --terragrunt-working-dir ${{ matrix.folder }}"
 
-      # - run: terragrunt --version
