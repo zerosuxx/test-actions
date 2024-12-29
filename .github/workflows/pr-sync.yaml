@@ -55,7 +55,7 @@ jobs:
         with:
           tool_versions: ${{ env.TOOLS }}
 
-      - name: Load plan file
+      - name: Load plan file(s)
         uses: actions/cache@v4
         with:
           path: /tmp/tfplan
@@ -63,9 +63,10 @@ jobs:
           restore-keys: |
             plan-${{ matrix.folder }}-${{ github.event.number }}
   
-      - run: |
+      - name: Run
+        run: |
           action="plan"
-          if [ "${{ github.event.action }}" == "closed" ]; then
+          if [ "${{ github.event.action }}" == "closed" ] && [ "${{ github.event.pull_request.merged }}" == "true" ]; then
             action="apply"
           fi
 
