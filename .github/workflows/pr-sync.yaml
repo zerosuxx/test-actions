@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.modified-files.outputs.matrix }}
+      affected_folders_length: ${{ steps.modified-files.outputs.affected_folders_length }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,11 +39,12 @@ jobs:
           # done
 
           echo "matrix=$(jq -c -n '{folder: $ARGS.positional}' --args "${affected_folders[@]}")" | tee -a $GITHUB_OUTPUT
+          echo "affected_folders_length=${#affected_folders[@]}" | tee -a $GITHUB_OUTPUT
 
   plan:
     needs: prepare
     runs-on: ubuntu-latest
-    if: contains(fromJSON('["opened", "synchronize"]'), github.event.action)
+    if: needs.prepare.outputs.affected_folders_length > 0 && contains(fromJSON('["opened", "synchronize"]'), github.event.action)
     strategy:
       matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
     steps:
