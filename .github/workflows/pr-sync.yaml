@@ -29,8 +29,10 @@ jobs:
       - name: modified files
         id: modified-files
         shell: /usr/bin/bash -eo pipefail {0}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          modified_files=$(curl -fsSL "${{ github.event.pull_request.diff_url }}" | grep "^diff --git" | awk '{print $3}')
+          modified_files=$(gh pr diff ${{ github.event.number }} | grep "^diff --git" | awk '{print $3}')
 
           affected_folders=()
           for folder in $(echo ${FOLDER_LIST} | sed "s/,/ /g")
