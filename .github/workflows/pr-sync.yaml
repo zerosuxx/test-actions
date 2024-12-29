@@ -18,3 +18,13 @@ jobs:
         run: echo '${{ toJSON(github) }}'
       - name: modified files
         run: git diff --name-only origin/master
+
+      - name: Check terragrunt HCL
+        uses: gruntwork-io/terragrunt-action@v2
+        with:
+          tf_version: '1.10.3'
+          tg_version: '0.71.1'
+          tg_dir: '.'
+          tg_command: '--version'
+
+      - run: terragrunt
