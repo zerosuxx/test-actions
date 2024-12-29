@@ -36,7 +36,7 @@ jobs:
           echo "matrix=$(jq -c -n '$ARGS.positional' --jsonargs "${affected_folders[@]})" >> $GITHUB_OUTPUT
 
   plan:
-    needs: create-pull-request
+    needs: prepare
     runs-on: ubuntu-latest
     strategy:
       matrix:
