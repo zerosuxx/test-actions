@@ -87,11 +87,12 @@ jobs:
           echo '```' > $GITHUB_STEP_SUMMARY
           terragrunt run-all "${action}" \
             --terragrunt-working-dir "$(pwd)/${{ matrix.folder }}" 2>&1 | tee -a >(sed -e 's/\x1b\[[0-9;]*m//g' >>$GITHUB_STEP_SUMMARY)
-          cat $GITHUB_STEP_SUMMARY
+          cat $GITHUB_STEP_SUMMARY > /tmp/summary.txt
 
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@v3
         with:
-          message: |
-            _(execution **${{ github.run_id }}** / attempt **${{ github.run_attempt }}**)_
-          comment-tag: execution
+          file-path: /tmp/summary.txt
+          # message: |
+          #   _(execution **${{ github.run_id }}** / attempt **${{ github.run_attempt }}**)_
+          # comment-tag: execution
