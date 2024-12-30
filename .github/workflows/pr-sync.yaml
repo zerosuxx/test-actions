@@ -6,6 +6,7 @@ on:
       - opened
       - synchronize
       # - closed
+  workflow_call:
 
 env:
   TERRAGRUNT_NON_INTERACTIVE: 'true'
