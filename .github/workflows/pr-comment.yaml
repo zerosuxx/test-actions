@@ -6,7 +6,7 @@ on:
       - created
   
 jobs:
-  sync:
+  run:
     if: contains(fromJSON('["/plan","/apply"]'), github.event.comment.body) && github.event.issue.pull_request
     uses: ./.github/workflows/pr-sync.yaml
     with:
