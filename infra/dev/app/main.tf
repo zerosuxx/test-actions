@@ -1,4 +1,4 @@
-resource "random_string" "random5" {
+resource "random_string" "random6" {
   length           = 16
   special          = true
   override_special = "/@£$"
