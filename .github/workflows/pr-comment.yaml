@@ -6,4 +6,4 @@ on:
 jobs:
   sync:
     if: contains(github.event.comment.body, 'plan') && github.event.issue.pull_request
-    uses: ./.github/workflows/pr-sync.yml
+    uses: ./.github/workflows/pr-sync.yaml
