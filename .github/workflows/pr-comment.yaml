@@ -1,0 +1,9 @@
+name: Run Workflow on PR Comment
+on:
+  issue_comment:
+    types: [created]
+  
+jobs:
+  sync:
+    if: contains(github.event.comment.body, 'plan') && github.event.issue.pull_request
+    uses: ./.github/workflows/pr-sync.yml
