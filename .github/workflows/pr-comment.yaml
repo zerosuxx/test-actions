@@ -4,6 +4,12 @@ on:
     types: [created]
   
 jobs:
+  a:
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
   sync:
     if: contains(github.event.comment.body, 'plan') && github.event.issue.pull_request
     uses: ./.github/workflows/pr-sync.yaml
