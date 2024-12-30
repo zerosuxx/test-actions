@@ -81,6 +81,7 @@ jobs:
             action="apply"
           fi
 
+          echo '```' > $GITHUB_STEP_SUMMARY
           terragrunt run-all "${action}" \
             --terragrunt-working-dir "$(pwd)/${{ matrix.folder }}" 2>&1 | tee -a >(sed -e 's/\x1b\[[0-9;]*m//g' >>$GITHUB_STEP_SUMMARY)
 
