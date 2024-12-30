@@ -7,7 +7,11 @@ on:
       - synchronize
       # - closed
   workflow_call:
-
+    inputs:
+      action:
+        default: '/plan'
+        required: false
+        type: string
 env:
   TERRAGRUNT_NON_INTERACTIVE: 'true'
   TERRAGRUNT_FORWARD_TF_STDOUT: 'true'
@@ -76,7 +80,7 @@ jobs:
         shell: /usr/bin/bash -eo pipefail {0}
         run: |
           action="plan"
-          if [ "${{ github.event.action }}" == "closed" ] && [ "${{ github.event.pull_request.merged }}" == "true" ]; then
+          if [ "${{ inputs.action }}}" == "/apply" ]; then
             action="apply"
           fi
 
@@ -84,8 +88,9 @@ jobs:
           terragrunt run-all "${action}" \
             --terragrunt-working-dir "$(pwd)/${{ matrix.folder }}" 2>&1 | tee -a >(sed -e 's/\x1b\[[0-9;]*m//g' >>$GITHUB_STEP_SUMMARY)
 
-
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@v3
         with:
-          file-path: ${{ github.step_summary }}
+          message: |
+            _(execution **${{ github.run_id }}** / attempt **${{ github.run_attempt }}**)_
+          comment-tag: execution
