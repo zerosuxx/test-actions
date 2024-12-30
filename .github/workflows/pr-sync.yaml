@@ -6,6 +6,7 @@ on:
     types:
       - opened
       - synchronize
+      - labeled
       # - closed
   workflow_call:
     inputs:
