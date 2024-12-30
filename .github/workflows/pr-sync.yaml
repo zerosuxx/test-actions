@@ -5,10 +5,14 @@ on:
     types:
       - opened
       - synchronize
-      - closed
+      # - closed
+  issue_comment:
 
 env:
   TERRAGRUNT_NON_INTERACTIVE: 'true'
+  ERRAGRUNT_FORWARD_TF_STDOUT: 'true'
+  TERRAGRUNT_LOG_CUSTOM_FORMAT: "%level(case=upper,width=4)[%interval] %msg %prefix(path=short,prefix='prefix=[',suffix=']')"
+  TERRAGRUNT_OUT_DIR: "/tmp/tfplan"
   FOLDER_LIST: 'infra/dev,infra/staging,infra/prod'
   TOOLS: |
     terraform 1.10.3
@@ -32,7 +36,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          modified_files=$(gh pr diff ${{ github.event.number }} | grep "^diff --git" | awk '{print $3}')
+          modified_files=$(git diff --name-only origin/master)
 
           affected_folders=()
           for folder in $(echo ${FOLDER_LIST} | sed "s/,/ /g")
@@ -62,7 +66,7 @@ jobs:
       - name: Load plan file(s)
         uses: actions/cache@v4
         with:
-          path: /tmp/tfplan
+          path: ${{ env.TERRAGRUNT_OUT_DIR }}
           key: plan-${{ matrix.folder }}-${{ github.event.number }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             plan-${{ matrix.folder }}-${{ github.event.number }}
@@ -75,5 +79,11 @@ jobs:
             action="apply"
           fi
 
-          terragrunt run-all "${action}" --terragrunt-out-dir /tmp/tfplan --terragrunt-working-dir "$(pwd)/${{ matrix.folder }}"
+          terragrunt run-all "${action}" \
+            --terragrunt-working-dir "$(pwd)/${{ matrix.folder }}" 2>&1 | tee -a >(sed -e 's/\x1b\[[0-9;]*m//g' >>$GITHUB_STEP_SUMMARY)
 
+
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          message: ${{ github.step_summary }}
