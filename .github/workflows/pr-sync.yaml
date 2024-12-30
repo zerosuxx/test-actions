@@ -27,7 +27,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'issue_comment' && format('refs/pull/{0}/head', github.event.issue.number) || '' }}
           fetch-depth: 0
       - name: test
         run: echo '${{ toJSON(github) }}'
@@ -40,6 +39,8 @@ jobs:
             ${{ github.event.issue.body || github.event.body }}
           EOT
           )
+          default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/@@')
+          modified_files=$(git diff --name-only "$default_branch")
 
           affected_folders=($(echo "$additional_folders" | tr ',' ' '))
           for folder in $(echo ${FOLDER_LIST} | sed "s/,/ /g")
