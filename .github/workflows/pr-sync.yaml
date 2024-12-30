@@ -43,7 +43,9 @@ jobs:
         run: |
           modified_files=$(git diff --name-only origin/master)
 
-          affected_folders=()
+          additional_folders=$(echo -e "${{ github.event.description }}" | grep -oP '(?<=additional_folders: `)[^`]*(?=`)')
+
+          affected_folders=($(echo "$additional_folders" | tr ',' ' '))
           for folder in $(echo ${FOLDER_LIST} | sed "s/,/ /g")
           do
             if echo "$modified_files" | grep -q "${folder}"; then
