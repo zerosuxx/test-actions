@@ -12,7 +12,7 @@ on:
 
 env:
   TERRAGRUNT_NON_INTERACTIVE: 'true'
-  ERRAGRUNT_FORWARD_TF_STDOUT: 'true'
+  TERRAGRUNT_FORWARD_TF_STDOUT: 'true'
   TERRAGRUNT_LOG_CUSTOM_FORMAT: "%level(case=upper,width=4)[%interval] %msg %prefix(path=short,prefix='prefix=[',suffix=']')"
   TERRAGRUNT_OUT_DIR: "/tmp/tfplan"
   FOLDER_LIST: 'infra/dev,infra/staging,infra/prod'
