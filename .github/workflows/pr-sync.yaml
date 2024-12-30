@@ -88,4 +88,4 @@ jobs:
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@v3
         with:
-          message: ${{ github.step_summary }}
+          file-path: ${{ github.step_summary }}
