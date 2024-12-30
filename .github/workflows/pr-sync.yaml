@@ -1,19 +1,13 @@
 name: PrSync
 
 on:
-  workflow_dispatch:
   pull_request:
     types:
       - opened
       - synchronize
       - labeled
       # - closed
-  workflow_call:
-    inputs:
-      action:
-        default: '/plan'
-        required: false
-        type: string
+
 env:
   TERRAGRUNT_NON_INTERACTIVE: 'true'
   TERRAGRUNT_FORWARD_TF_STDOUT: 'true'
@@ -40,8 +34,6 @@ jobs:
       - name: modified files
         id: modified-files
         shell: /usr/bin/bash -eo pipefail {0}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           modified_files=$(git diff --name-only origin/master)
           additional_folders=$(cat << "EOT" | grep -oP '(?<=additional_folders: `)[^`]*(?=`)'
