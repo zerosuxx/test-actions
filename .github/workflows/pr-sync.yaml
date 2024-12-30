@@ -42,8 +42,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           modified_files=$(git diff --name-only origin/master)
-
-          additional_folders=$(echo -e "${{ github.event.issue.body || github.event.body }}" | grep -oP '(?<=additional_folders: `)[^`]*(?=`)')
+          additional_folders=$(cat << "EOT" | grep -oP '(?<=additional_folders: `)[^`]*(?=`)'
+            ${{ github.event.issue.body || github.event.body }}
+          EOT
+          )
 
           affected_folders=($(echo "$additional_folders" | tr ',' ' '))
           for folder in $(echo ${FOLDER_LIST} | sed "s/,/ /g")
