@@ -6,9 +6,6 @@ on:
       - opened
       - synchronize
       # - closed
-  issue_comment:
-    types:
-      - created
 
 env:
   TERRAGRUNT_NON_INTERACTIVE: 'true'
