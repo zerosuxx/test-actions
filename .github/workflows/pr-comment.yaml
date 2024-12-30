@@ -1,16 +1,11 @@
 name: Run Workflow on PR Comment
+
 on:
   issue_comment:
-    types: [created]
+    types:
+      - created
   
 jobs:
-  a:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
   sync:
-    if: contains(github.event.comment.body, 'plan') && github.event.issue.pull_request
+    if: contains(fromJSON('["/plan","/apply"]'), github.event.comment.body) && github.event.issue.pull_request
     uses: ./.github/workflows/pr-sync.yaml
