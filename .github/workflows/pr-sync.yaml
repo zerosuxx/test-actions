@@ -81,8 +81,8 @@ jobs:
         shell: /usr/bin/bash -eo pipefail {0}
         run: |
           action="plan"
-          if [ "${{ inputs.action }}" == "/apply" ]; then
-            action="apply"
+          if [ "${{ github.event.action }}" == "labeled" ]; then
+            action="${{ github.event.label.name }}"
           fi
 
           echo '```' > $GITHUB_STEP_SUMMARY
