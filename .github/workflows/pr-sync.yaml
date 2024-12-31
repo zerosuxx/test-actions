@@ -35,6 +35,11 @@ jobs:
         shell: /usr/bin/bash -eo pipefail {0}
         run: |
           modified_files=$(git diff --name-only origin/master)
+          git remote show origin
+          git branch -r
+          default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/@@')
+          modified_files=$(git diff --name-only "$default_branch")
+
           additional_folders=$(cat << "EOT" | grep -oP '(?<=additional_folders: `)[^`]*(?=`)'
             ${{ github.event.issue.body || github.event.body }}
           EOT
