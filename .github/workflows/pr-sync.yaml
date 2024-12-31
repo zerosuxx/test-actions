@@ -37,14 +37,14 @@ jobs:
           default_branch=$(git remote show origin | grep -oP '(?<=HEAD branch: )\S+')
           modified_files=$(git diff --name-only "origin/$default_branch")
 
-          additional_folders=$(cat << "EOT" | grep -oP '(?<=additional_folders: `)[^`]*(?=`)'
+          extra_sync_folders=$(cat << "EOT" | (grep -oP '(?<=extra_sync_folders: `)[^`]*(?=`)' || true)
             ${{ github.event.pull_request.body1 }}
           EOT
           )
           default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/@@')
           modified_files=$(git diff --name-only "$default_branch")
 
-          affected_folders=($(echo "$additional_folders" | tr ',' ' '))
+          affected_folders=($(echo "$extra_sync_folders" | tr ',' ' '))
           for folder in $(echo ${FOLDER_LIST} | sed "s/,/ /g")
           do
             if echo "$modified_files" | grep -q "${folder}"; then
