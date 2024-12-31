@@ -34,14 +34,11 @@ jobs:
         id: modified-files
         shell: /usr/bin/bash -eo pipefail {0}
         run: |
-          modified_files=$(git diff --name-only origin/master)
-          git remote show origin
-          git branch -r
           default_branch=$(git remote show origin | grep -oP '(?<=HEAD branch: )\S+')
           modified_files=$(git diff --name-only "origin/$default_branch")
 
           additional_folders=$(cat << "EOT" | grep -oP '(?<=additional_folders: `)[^`]*(?=`)'
-            ${{ github.event.pull_request.body }}
+            ${{ github.event.pull_request.body1 }}
           EOT
           )
           default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/@@')
