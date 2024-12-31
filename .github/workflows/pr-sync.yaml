@@ -37,11 +37,11 @@ jobs:
           modified_files=$(git diff --name-only origin/master)
           git remote show origin
           git branch -r
-          default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/@@')
-          modified_files=$(git diff --name-only "$default_branch")
+          default_branch=$(git remote show origin | grep -oP '(?<=HEAD branch: )\S+')
+          modified_files=$(git diff --name-only "origin/$default_branch")
 
           additional_folders=$(cat << "EOT" | grep -oP '(?<=additional_folders: `)[^`]*(?=`)'
-            ${{ github.event.issue.body || github.event.body }}
+            ${{ github.event.pull_request.body }}
           EOT
           )
           default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/@@')
