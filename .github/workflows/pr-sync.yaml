@@ -41,8 +41,6 @@ jobs:
             ${{ github.event.pull_request.body }}
           EOT
           )
-          default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/@@')
-          modified_files=$(git diff --name-only "$default_branch")
 
           affected_folders=($(echo "$extra_sync_folders" | tr ',' ' '))
           for folder in $(echo ${FOLDER_LIST} | sed "s/,/ /g")
