@@ -38,7 +38,7 @@ jobs:
           modified_files=$(git diff --name-only "origin/$default_branch")
 
           extra_sync_folders=$(cat << "EOT" | (grep -oP '(?<=extra_sync_folders: `)[^`]*(?=`)' || true)
-            ${{ github.event.pull_request.body1 }}
+            ${{ github.event.pull_request.body }}
           EOT
           )
           default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/@@')
