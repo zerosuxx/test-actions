@@ -4,6 +4,10 @@ on:
   workflow_dispatch:
   push:
 
+env:
+  HELLO: "Joe"
+  HELLO2: "Jane"
+
 jobs:
   info:
     runs-on: ubuntu-latest
@@ -14,6 +18,7 @@ jobs:
 
       - name: Print variables
         run: |
+          echo '${{ toJson(env) }}'
           function safe_show_commit_message() { 
             git show -s --format='%B' ${{ github.sha }} | 
             sed 's/×/+/g' |
