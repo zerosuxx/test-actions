@@ -1,0 +1,15 @@
+name: Reusable
+
+on:
+  workflow_call:
+    inputs:
+      envs:
+        description: 'Envs'
+        required: true
+        type: string
+
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo ${{ inputs.envs }}
