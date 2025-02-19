@@ -9,6 +9,11 @@ env:
   HELLO2: "Jane"
 
 jobs:
+  call-reusable:
+    uses: ./.github/workflows/reusable.yml
+    with:
+      envs: ${{ toJson(env) }}
+
   info:
     runs-on: ubuntu-latest
     steps:
