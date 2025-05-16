@@ -26,6 +26,7 @@ jobs:
 
       - name: Print variables
         run: |
+          terraform -version
           echo '${{ toJson(env) }}'
           function safe_show_commit_message() { 
             git show -s --format='%B' ${{ github.sha }} | 
