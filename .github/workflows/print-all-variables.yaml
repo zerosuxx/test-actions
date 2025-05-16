@@ -11,8 +11,6 @@ env:
 jobs:
   call-reusable:
     uses: ./.github/workflows/reusable.yaml
-    with:
-      envs: ${{ toJson(env) }}
 
   info:
     runs-on: ubuntu-latest
