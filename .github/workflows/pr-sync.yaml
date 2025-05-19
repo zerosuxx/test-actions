@@ -46,10 +46,12 @@ jobs:
         run: echo "${{ steps.extract.outputs.labels }}"
 
       - name: Post a message in a channel
-        if: ${{ secrets.SLACK_WEBHOOK_URL }} != '' && contains(fromJSON('["labeled"]'), github.event.action) && contains(steps.extract.outputs.labels, 'plan') && contains(steps.extract.outputs.labels, 'apply')
+        if: env.SLACK_WEBHOOK_URL != '' && contains(fromJSON('["labeled"]'), github.event.action) && contains(steps.extract.outputs.labels, 'plan') && contains(steps.extract.outputs.labels, 'apply')
         uses: slackapi/slack-github-action@v2.1.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook: ${{ env.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
             text: "*GitHub Action build result*: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
