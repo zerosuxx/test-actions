@@ -40,7 +40,7 @@ jobs:
       - name: Extract labels
         id: extract
         run: |
-          echo "labels=$(jq -r '[.[] | .name]' <<< '${{ toJson(github.event.pull_requests.labels) }}')" >> $GITHUB_OUTPUT
+          echo "labels=$(jq -r '[.[] | .name]' <<< '${{ toJson(github.event.pull_request.labels) }}')" >> $GITHUB_OUTPUT
 
       - name: Show labels
         run: echo "${{ steps.extract.outputs.labels }}"
