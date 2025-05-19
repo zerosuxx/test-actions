@@ -1,19 +1,13 @@
 name: PrSync
 
 on:
-  workflow_dispatch:
   pull_request:
     types:
       - opened
       - synchronize
       - labeled
       # - closed
-  workflow_call:
-    inputs:
-      action:
-        default: '/plan'
-        required: false
-        type: string
+
 env:
   TERRAGRUNT_NON_INTERACTIVE: 'true'
   TERRAGRUNT_FORWARD_TF_STDOUT: 'true'
@@ -33,7 +27,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'issue_comment' && format('refs/pull/{0}/head', github.event.issue.number) || '' }}
           fetch-depth: 0
       - name: test
         run: echo '${{ toJSON(github) }}'
@@ -63,16 +56,16 @@ jobs:
       - name: modified files
         id: modified-files
         shell: /usr/bin/bash -eo pipefail {0}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          modified_files=$(git diff --name-only origin/master)
-          additional_folders=$(cat << "EOT" | grep -oP '(?<=additional_folders: `)[^`]*(?=`)'
-            ${{ github.event.issue.body || github.event.body }}
+          default_branch=$(git remote show origin | grep -oP '(?<=HEAD branch: )\S+')
+          modified_files=$(git diff --name-only "origin/$default_branch")
+
+          extra_sync_folders=$(cat << "EOT" | (grep -oP '(?<=extra_sync_folders: `)[^`]*(?=`)' || true)
+            ${{ github.event.pull_request.body }}
           EOT
           )
 
-          affected_folders=($(echo "$additional_folders" | tr ',' ' '))
+          affected_folders=($(echo "$extra_sync_folders" | tr ',' ' '))
           for folder in $(echo ${FOLDER_LIST} | sed "s/,/ /g")
           do
             if echo "$modified_files" | grep -q "${folder}"; then
@@ -109,8 +102,8 @@ jobs:
         shell: /usr/bin/bash -eo pipefail {0}
         run: |
           action="plan"
-          if [ "${{ inputs.action }}" == "/apply" ]; then
-            action="apply"
+          if [ "${{ github.event.action }}" == "labeled" ]; then
+            action="${{ github.event.label.name }}"
           fi
 
           echo '```' > $GITHUB_STEP_SUMMARY
@@ -120,6 +113,7 @@ jobs:
 
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@v3
+        if: contains(fromJSON('["labeled"]'), github.event.action)
         with:
           file-path: /tmp/summary.txt
           # message: |
