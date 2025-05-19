@@ -54,12 +54,12 @@ jobs:
           webhook: ${{ env.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*${{ github.event.pull_request.title }}*"
-            blocks:
-              - type: "section"
-                text:
-                  type: "mrkdwn"
-                  text: "<@U05UBJJTK6K> ${{ github.event.pull_request.body }}"
+            text: "*${{ github.event.pull_request.title }}*\n\n${{ github.event.pull_request.body }}"
+            # blocks:
+            #   - type: "section"
+            #     text:
+            #       type: "mrkdwn"
+            #       text: "<@U05UBJJTK6K> ${{ github.event.pull_request.body }}"
               
       - name: modified files
         id: modified-files
