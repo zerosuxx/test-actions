@@ -34,8 +34,8 @@ jobs:
         with:
           ref: ${{ github.event_name == 'issue_comment' && format('refs/pull/{0}/head', github.event.issue.number) || '' }}
           fetch-depth: 0
-      - name: test
-        run: echo ${{ toJSON(github) }}
+      #- name: test
+      #  run: echo '${{ toJSON(github) }}'
 
       - name: Extract labels
         id: extract
