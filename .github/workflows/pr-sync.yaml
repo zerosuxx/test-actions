@@ -7,7 +7,6 @@ on:
       - opened
       - synchronize
       - labeled
-      # - closed
   workflow_call:
     inputs:
       action:
