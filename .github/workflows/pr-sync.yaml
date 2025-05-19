@@ -59,7 +59,7 @@ jobs:
               - type: "section"
                 text:
                   type: "mrkdwn"
-                  text: "*${{ github.event.pull_request.title }}*\n\n${{ github.event.pull_request.body.replace('\n', '\\n') }}"
+                  text: "*${{ github.event.pull_request.title }}*\n\n${{ toJson(github.event.pull_request.body) }}"
               
       - name: modified files
         id: modified-files
