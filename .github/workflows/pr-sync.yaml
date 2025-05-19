@@ -59,7 +59,7 @@ jobs:
               - type: "section"
                 text:
                   type: "mrkdwn"
-                  text: "@zerosuxx GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                  text: "@Tomi GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
               
       - name: modified files
         id: modified-files
