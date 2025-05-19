@@ -37,6 +37,29 @@ jobs:
           fetch-depth: 0
       - name: test
         run: echo '${{ toJSON(github) }}'
+
+      - name: Extract labels
+        id: extract
+        run: |
+          echo "labels=$(jq -r '[.[] | .name]' <<< '${{ toJson(github.event.pull_requests.labels) }}')" >> $GITHUB_OUTPUT
+
+      - name: Show labels
+        run: echo "${{ steps.extract.outputs.labels }}"
+
+      - name: Post a message in a channel
+        if: secrets.SLACK_WEBHOOK_URL != "" && contains(fromJSON('["labeled"]'), github.event.action) && contains(steps.extract.outputs.labels, 'plan') && contains(steps.extract.outputs.labels, 'apply')
+        uses: slackapi/slack-github-action@v2.1.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "*GitHub Action build result*: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+            blocks:
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "@zerosuxx GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+              
       - name: modified files
         id: modified-files
         shell: /usr/bin/bash -eo pipefail {0}
