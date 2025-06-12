@@ -4,124 +4,19 @@ on:
   workflow_dispatch:
   pull_request:
     types:
-      - opened
-      - synchronize
+      # - opened
+      # - synchronize
       - labeled
       # - closed
-  workflow_call:
-    inputs:
-      action:
-        default: '/plan'
-        required: false
-        type: string
-env:
-  TERRAGRUNT_NON_INTERACTIVE: 'true'
-  TERRAGRUNT_FORWARD_TF_STDOUT: 'true'
-  TERRAGRUNT_LOG_CUSTOM_FORMAT: "%level(case=upper,width=4)[%interval] %msg %prefix(path=short,prefix='prefix=[',suffix=']')"
-  TERRAGRUNT_OUT_DIR: "/tmp/tfplan"
-  FOLDER_LIST: 'infra/dev,infra/staging,infra/prod'
-  TOOLS: |
-    terraform 1.10.3
-    terragrunt 0.71.1
+  push:
 
 jobs:
   prepare:
     runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.modified-files.outputs.matrix }}
-      affected_folders_length: ${{ steps.modified-files.outputs.affected_folders_length }}
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'issue_comment' && format('refs/pull/{0}/head', github.event.issue.number) || '' }}
           fetch-depth: 0
+
       - name: test
-        run: echo '${{ toJSON(github) }}'
-
-      - name: Extract labels
-        id: extract
-        run: |
-          echo "labels=$(jq -r '[.[] | .name]' <<< '${{ toJson(github.event.pull_requests.labels) }}')" >> $GITHUB_OUTPUT
-
-      - name: Show labels
-        run: echo "${{ steps.extract.outputs.labels }}"
-
-      - name: Post a message in a channel
-        if: secrets.SLACK_WEBHOOK_URL != '' && contains(fromJSON('["labeled"]'), github.event.action) && contains(steps.extract.outputs.labels, 'plan') && contains(steps.extract.outputs.labels, 'apply')
-        uses: slackapi/slack-github-action@v2.1.0
-        with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          webhook-type: incoming-webhook
-          payload: |
-            text: "*GitHub Action build result*: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
-            blocks:
-              - type: "section"
-                text:
-                  type: "mrkdwn"
-                  text: "@zerosuxx GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
-              
-      - name: modified files
-        id: modified-files
-        shell: /usr/bin/bash -eo pipefail {0}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          modified_files=$(git diff --name-only origin/master)
-          additional_folders=$(cat << "EOT" | grep -oP '(?<=additional_folders: `)[^`]*(?=`)'
-            ${{ github.event.issue.body || github.event.body }}
-          EOT
-          )
-
-          affected_folders=($(echo "$additional_folders" | tr ',' ' '))
-          for folder in $(echo ${FOLDER_LIST} | sed "s/,/ /g")
-          do
-            if echo "$modified_files" | grep -q "${folder}"; then
-              affected_folders+=("$folder")
-            fi
-          done
-
-          echo "matrix=$(jq -c -n '{folder: $ARGS.positional}' --args "${affected_folders[@]}")" | tee -a $GITHUB_OUTPUT
-          echo "affected_folders_length=${#affected_folders[@]}" | tee -a $GITHUB_OUTPUT
-
-  tf:
-    needs: prepare
-    runs-on: ubuntu-latest
-    if: needs.prepare.outputs.affected_folders_length > 0 #&& contains(fromJSON('["opened", "synchronize"]'), github.event.action)
-    strategy:
-      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-      
-      - uses: jdx/mise-action@v2
-        with:
-          tool_versions: ${{ env.TOOLS }}
-
-      - name: Load plan file(s)
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.TERRAGRUNT_OUT_DIR }}
-          key: plan-${{ matrix.folder }}-${{ github.event.number }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: |
-            plan-${{ matrix.folder }}-${{ github.event.number }}
-  
-      - name: Run
-        shell: /usr/bin/bash -eo pipefail {0}
-        run: |
-          action="plan"
-          if [ "${{ inputs.action }}" == "/apply" ]; then
-            action="apply"
-          fi
-
-          echo '```' > $GITHUB_STEP_SUMMARY
-          terragrunt run-all "${action}" \
-            --terragrunt-working-dir "$(pwd)/${{ matrix.folder }}" 2>&1 | tee -a >(sed -e 's/\x1b\[[0-9;]*m//g' >>$GITHUB_STEP_SUMMARY)
-          cat $GITHUB_STEP_SUMMARY > /tmp/summary.txt
-
-      - name: Comment PR
-        uses: thollander/actions-comment-pull-request@v3
-        with:
-          file-path: /tmp/summary.txt
-          # message: |
-          #   _(execution **${{ github.run_id }}** / attempt **${{ github.run_attempt }}**)_
-          # comment-tag: execution
+        run: echo "${{ toJSON(github) }}"
