@@ -2,10 +2,10 @@ name: Pr
 
 on:
   workflow_dispatch:
+  push:
   pull_request:
     types:
       - labeled
-  push:
 
 jobs:
   prepare:
