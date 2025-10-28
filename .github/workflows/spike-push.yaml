@@ -1,13 +1,21 @@
-name: SpikePush
+name: Build
 
 on: 
   push:
-    branches:
-      - 'spike/*-*'
+  workflow_dispatch:
+
+env:
+  PATCH_VERSION: '1'
 
 jobs:
   build:
-    runs-on: "ubuntu-latest"
+    runs-on: 'ubuntu-latest'
     steps:
-      - name: test
-        run: echo '${{ github }}'
+      - uses: actions/checkout@v5
+        with:
+          repository: 'zerosuxx/sftpgo'
+          ref: '2.7.99-develop.${{ env.PATCH_VERSION }}'
+
+      - run: |
+          docker build -t sftpgo --build-arg INSTALL_OPTIONAL_PACKAGES=true --build-arg COMMIT_SHA="$(git describe --always --abbrev=8)-zerosuxx.${{ env.PATCH_VERSION }}" --file Dockerfile.alpine .
+          docker run --rm -it sftpgo sftpgo --version
