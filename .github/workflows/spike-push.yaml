@@ -27,6 +27,7 @@ jobs:
           push: false
           context: .
           file: Dockerfile.alpine
+          platforms: linux/amd64,linux/arm64
           build-args: |
             INSTALL_OPTIONAL_PACKAGES=true
             COMMIT_SHA=${{ env.COMMIT_SHA }}
