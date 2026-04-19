@@ -24,17 +24,69 @@ jobs:
       - name: Patch package name to com.termux.nix.am
         run: |
           sed -i 's/applicationId "com.termux.termuxam"/applicationId "com.termux.nix.am"/' app/build.gradle
+
           find . \( -name "*.xml" -o -name "*.java" -o -name "*.kt" \) | \
             xargs grep -l "com\.termux\.termuxam" | \
             xargs sed -i 's/com\.termux\.termuxam/com.termux.nix.am/g'
 
+          # Java fájlok áthelyezése az új package struktúrába
+          mkdir -p app/src/main/java/com/termux/nix/am
+          cp app/src/main/java/com/termux/termuxam/* app/src/main/java/com/termux/nix/am/
+          rm -rf app/src/main/java/com/termux/termuxam
+
           # ellenőrzés
           grep "applicationId" app/build.gradle
+          find app/src -name "*.java" | head -5
 
       - name: Build debug APK
         run: ./gradlew assembleDebug --no-daemon
 
       - name: Rename APK
+        run: |
+          mv app/build/outputs/apk/debug/*.apk \
+             app/build/outputs/apk/debug/termuxam-nix-on-droid.apk
+
+      - name: Upload TermuxAm artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: termuxam-nix-on-droid
+          path: app/build/outputs/apk/debug/termuxam-nix-on-droid.apk
+
+  build-termux-api:
+    name: Build Termux:API APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout termux-api
+        uses: actions/checkout@v4
+        with:
+          repository: termux/termux-api
+          ref: master
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Patch TERMUX_PACKAGE_NAME to com.termux.nix
+        run: |
+          sed -i 's/manifestPlaceholders\.TERMUX_PACKAGE_NAME = "com\.termux"/manifestPlaceholders.TERMUX_PACKAGE_NAME = "com.termux.nix"/' \
+            app/build.gradle
+          grep "TERMUX_PACKAGE_NAME" app/build.gradle
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Rename APK
+        run: |
+          mv app/build/outputs/apk/debug/*.apk \
+             app/build/outputs/apk/debug/termux-api-nix-on-droid.apk
+
+      - name: Upload Termux:API artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: termux-api-nix-on-droid
+          path: app/build/outputs/apk/debug/termux-api-nix-on-droid.apk      - name: Rename APK
         run: |
           mv app/build/outputs/apk/debug/*.apk \
              app/build/outputs/apk/debug/termuxam-nix-on-droid.apk
