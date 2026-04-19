@@ -86,7 +86,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: termux-api-nix-on-droid
-          path: app/build/outputs/apk/debug/termux-api-nix-on-droid.apk      - name: Rename APK
+          path: app/build/outputs/apk/debug/termux-api-nix-on-droid.apk
+      - name: Rename APK
         run: |
           mv app/build/outputs/apk/debug/*.apk \
              app/build/outputs/apk/debug/termuxam-nix-on-droid.apk
