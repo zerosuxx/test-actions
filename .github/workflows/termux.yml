@@ -31,7 +31,7 @@ jobs:
 
           # Java fájlok áthelyezése az új package struktúrába
           mkdir -p app/src/main/java/com/termux/nix/am
-          cp app/src/main/java/com/termux/termuxam/* app/src/main/java/com/termux/nix/am/
+          cp -r app/src/main/java/com/termux/termuxam/* app/src/main/java/com/termux/nix/am/
           rm -rf app/src/main/java/com/termux/termuxam
 
           # ellenőrzés
