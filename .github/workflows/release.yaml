@@ -29,7 +29,7 @@ jobs:
       matrix:
         environment: ${{ startsWith(github.ref, 'refs/tags/')
           && fromJSON(format('["{0}"]', split(github.ref_name, '/')[0]))
-          || fromJSON(["dev"]) }}
+          || fromJSON('["dev"]') }}
     environment: ${{ matrix.environment }}
     steps:
       - run: echo ${{ matrix.environment }}
