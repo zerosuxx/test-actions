@@ -21,8 +21,21 @@ jobs:
         uses: jdx/mise-action@v4
         with:
           tool_versions: |
-            bitwarden-secrets-manager@2.1.0
+            bitwarden-secrets-manager 2.1.0
           reshim: true
           cache: false
 
-      - run: bws --version
+      - name: Debug bws
+        shell: bash
+        run: |
+          echo "PATH=$PATH"
+          echo "---- mise ls ----"
+          mise ls
+          echo "---- mise which ----"
+          mise which bws || true
+          echo "---- mise exec ----"
+          mise exec -- bws --version || true
+          echo "---- command -v ----"
+          command -v bws || true
+          echo "---- shim ----"
+          ls -la ~/.local/share/mise/shims/bws 2>&1 || true
