@@ -15,3 +15,14 @@ jobs:
         with:
           repository: 'zerosuxx/sftpgo'
           ref: ${{ env.IMAGE_TAG }}
+
+
+      - name: Install bws
+        uses: jdx/mise-action@v4
+        with:
+          tool_versions: |
+            bitwarden-secrets-manager@2.1.0
+          reshim: true
+          cache: false
+
+      - run: bws --version
